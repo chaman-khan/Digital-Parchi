@@ -1,107 +1,115 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import RightIcon from 'react-native-vector-icons/AntDesign';
-import UserIcon from 'react-native-vector-icons/FontAwesome';
-import LogoutIcon from 'react-native-vector-icons/AntDesign';
-import InfoIcon from 'react-native-vector-icons/Entypo';
-import InventoryIcon from 'react-native-vector-icons/MaterialIcons';
-import AddIcon from 'react-native-vector-icons/Ionicons';
-import InvoiceIcon from 'react-native-vector-icons/FontAwesome5';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  FlatList,
+  Dimensions,
+} from 'react-native';
+
+import Entypo from 'react-native-vector-icons/Entypo';
+
+import Theme from '../Theme/Theme';
+
+const {width} = Dimensions.get('window');
+
+const Fields = [
+  {
+    icon: 'info-with-circle',
+    title: 'Customer info',
+  },
+  {
+    icon: 'box',
+    title: 'Inventory management',
+    navigate: 'InventoryManagement',
+  },
+  {
+    icon: 'circle-with-plus',
+    title: 'Add new product',
+    navigate: 'AddProduct',
+  },
+  {
+    icon: 'text-document-inverted',
+    title: 'Invoice management',
+    navigate: 'Invoice',
+  },
+  {
+    icon: 'user',
+    title: 'Contact us',
+  },
+  {
+    icon: 'log-out',
+    title: 'Logout',
+  },
+];
 
 const Account = ({navigation}) => {
+  const renderItem = ({item, index}) => {
+    return (
+      <TouchableOpacity
+        activeOpacity={1}
+        style={styles.fieldWrapper}
+        onPress={() => {
+          if (item.navigate) navigation.navigate(item.navigate);
+          else return;
+        }}>
+        <View style={styles.fieldNameContainer}>
+          <View style={styles.iconWrapper}>
+            <Entypo name={item.icon} color="white" size={20} />
+          </View>
+          <Text style={styles.fieldTitle}>{item.title}</Text>
+        </View>
+        <Entypo name="chevron-right" color={Theme.colors.primary} size={22} />
+      </TouchableOpacity>
+    );
+  };
   return (
-    <View style={{width: '95%', alignSelf: 'center'}}>
+    <View style={styles.mainContainer}>
       <Text style={styles.hello}>Hello,</Text>
-      <TouchableOpacity activeOpacity={1} style={styles.item}>
-        <View style={{flexDirection: 'row', gap: 10}}>
-          <View style={styles.icon}>
-            <InfoIcon name="info-with-circle" color="white" size={20} />
-          </View>
-          <Text style={styles.text}>Customer Info</Text>
-        </View>
-        <RightIcon name="right" color="black" size={20} />
-      </TouchableOpacity>
-      <TouchableOpacity
-        activeOpacity={1}
-        style={styles.item}
-        onPress={() => navigation.navigate('InventoryManagement')}>
-        <View style={{flexDirection: 'row', gap: 10}}>
-          <View style={styles.icon}>
-            {/* <UserIcon name="user" color="white" size={30} /> */}
-            <InventoryIcon name="inventory" color="white" size={20} />
-          </View>
-          <Text style={styles.text}>Inventory Management</Text>
-        </View>
-        <RightIcon name="right" color="black" size={20} />
-      </TouchableOpacity>
-      <TouchableOpacity
-        activeOpacity={1}
-        style={styles.item}
-        onPress={() => navigation.navigate('AddProduct')}>
-        <View style={{flexDirection: 'row', gap: 10}}>
-          <View style={styles.icon}>
-            <AddIcon name="add-circle" color="white" size={20} />
-          </View>
-          <Text style={styles.text}>Add New Product</Text>
-        </View>
-        <RightIcon name="right" color="black" size={20} />
-      </TouchableOpacity>
-      <TouchableOpacity activeOpacity={1} style={styles.item}>
-        <View style={{flexDirection: 'row', gap: 10}}>
-          <View style={styles.icon}>
-            <InvoiceIcon name="file-invoice" color="white" size={20} />
-          </View>
-          <Text style={styles.text}>Invoice Management</Text>
-        </View>
-        <RightIcon name="right" color="black" size={20} />
-      </TouchableOpacity>
-      <TouchableOpacity activeOpacity={1} style={styles.item}>
-        <View style={{flexDirection: 'row', gap: 10}}>
-          <View style={styles.icon}>
-            <UserIcon name="user" color="white" size={20} />
-          </View>
-          <Text style={styles.text}>Contact Us</Text>
-        </View>
-        <RightIcon name="right" color="black" size={20} />
-      </TouchableOpacity>
-      <TouchableOpacity activeOpacity={1} style={styles.item}>
-        <View style={{flexDirection: 'row', gap: 10}}>
-          <View style={styles.icon}>
-            <LogoutIcon name="logout" color="white" size={20} />
-          </View>
-          <Text style={styles.text}>Logout</Text>
-        </View>
-        <RightIcon name="right" color="black" size={20} />
-      </TouchableOpacity>
+      <FlatList
+        data={Fields}
+        renderItem={renderItem}
+        ItemSeparatorComponent={<View style={styles.itemSeparator} />}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  item: {
+  mainContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  itemSeparator: {
+    height: 1,
+    backgroundColor: '#eeeeee',
+  },
+  fieldWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    height: 60,
-    backgroundColor: 'white',
-    paddingLeft: 10,
-    borderRadius: 10,
-    marginBottom: 10,
+    width: width - 20,
+    alignSelf: 'center',
+    paddingVertical: 10,
   },
-  icon: {
-    width: 30,
-    height: 30,
-    backgroundColor: '#6755A4',
-    borderRadius: 10,
+  fieldNameContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconWrapper: {
+    width: 40,
+    height: 40,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: Theme.colors.primary,
+    borderRadius: 10,
   },
-  text: {fontSize: 19, color: 'black'},
-  hello: {
-    fontSize: 30,
+  fieldTitle: {
     color: 'black',
-    fontWeight: 'bold',
-    marginBottom: 20,
+    fontSize: 14,
+    fontWeight: '500',
+    marginLeft: 15,
   },
 });
 export default Account;

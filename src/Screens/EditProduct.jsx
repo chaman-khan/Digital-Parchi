@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Dimensions,
   StyleSheet,
-  TextInput,
   Keyboard,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -20,62 +19,25 @@ import Theme from '../Theme/Theme';
 import {useSnackbar} from '../Components/CustomSnackBar';
 import {handlePostProduct} from '../Features/ParchiSlice';
 import CustomActivityIndicator from '../Components/CutomActivityIndicator';
+import {CustomInputField} from './AddProduct';
 
 const {width, height} = Dimensions.get('screen');
 
-export const CustomInputField = ({
-  title,
-  placeholder,
-  isMultiple = false,
-  value,
-  setValue,
-  keyboardType = 'default',
-  isRow = false,
-}) => {
-  return (
-    <View
-      style={[
-        styles.inputFieldWrapper,
-        {
-          height: isMultiple ? 150 : 55,
-        },
-        isRow && {
-          width: width / 2 - 15,
-        },
-      ]}>
-      <Text style={styles.inputFieldTag}>{title}</Text>
-      <TextInput
-        placeholder={placeholder}
-        value={value}
-        onChangeText={setValue}
-        multiline={isMultiple}
-        keyboardType={keyboardType}
-        placeholderTextColor={Theme.colors.background}
-        style={[
-          styles.inputField,
-          {
-            textAlignVertical: isMultiple ? 'top' : 'center',
-          },
-        ]}
-      />
-    </View>
-  );
-};
-
-const AddProduct = ({navigation, route}) => {
-  const {ProductID} = route.params;
+const EditProduct = ({navigation, route}) => {
+  const {productID} = route.params;
   const dispatch = useDispatch();
   const {showSnackbar} = useSnackbar();
   const {userId} = useSelector(state => state.pin);
   const {products} = useSelector(state => state.app);
   const [showActivity, setShowActivity] = useState(false);
+  const Item = products.filter(f => f.id === productID)[0];
 
-  const [image, setImage] = useState('');
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
-  const [category, setCategory] = useState('');
-  const [unit, setUnit] = useState('');
+  const [image, setImage] = useState(Item.Image);
+  const [title, setTitle] = useState(Item.Name);
+  const [description, setDescription] = useState(Item.Description);
+  const [price, setPrice] = useState(Item.Unit_Price.toString());
+  const [category, setCategory] = useState(Item.Category);
+  const [unit, setUnit] = useState(Item.Unit);
 
   const handlePickingImage = () => {
     ImagePicker.openPicker({
@@ -126,19 +88,14 @@ const AddProduct = ({navigation, route}) => {
   return (
     <View style={styles.mainContainer}>
       <CustomHeader
-        title={`Add\tProduct`}
+        title={`Edit\tProduct`}
         onPressBack={() => navigation.goBack()}
       />
       <CustomScrollView>
         <ImageBackground
-          source={{uri: `data:image;base64,${image?.uri}`}}
+          source={{uri: image.uri ? `data:image;base64,${image.uri}` : image}}
           style={styles.imageContainer}
           imageStyle={styles.imageStyle}>
-          {!image.uri && (
-            <View style={styles.imageEmpty}>
-              <Entypo name="plus" color={Theme.colors.primary} size={100} />
-            </View>
-          )}
           <TouchableOpacity
             style={styles.imagePicker}
             onPress={handlePickingImage}
@@ -272,4 +229,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddProduct;
+export default EditProduct;
