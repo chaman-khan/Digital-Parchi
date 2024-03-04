@@ -62,8 +62,7 @@ export const CustomInputField = ({
   );
 };
 
-const AddProduct = ({navigation, route}) => {
-  const {ProductID} = route.params;
+const AddProduct = ({navigation}) => {
   const dispatch = useDispatch();
   const {showSnackbar} = useSnackbar();
   const {userId} = useSelector(state => state.pin);
@@ -108,7 +107,7 @@ const AddProduct = ({navigation, route}) => {
       Image_Name: image.name,
       Category: category,
       Unit: unit,
-      Price: parseInt(price.trim()),
+      Price: parseFloat(price.trim()),
     };
     dispatch(handlePostProduct(data, onSuccess, onError));
   };

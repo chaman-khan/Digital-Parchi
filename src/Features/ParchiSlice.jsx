@@ -52,34 +52,71 @@ export const handlePostProduct = (data, onSuccess, onError) => {
   };
 };
 
-export const handleUpdateProduct = (
-  userID,
-  onSuccessGetData,
-  onErrorGetData,
-) => {
+export const handleUpdateProduct = (updatedProduct, onSuccess, onError) => {
   return async dispatch => {
     try {
-      const response = await fetch(
-        'https://parchi.maaqdocplus.com/updatePorducts',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({Business_ID: userID}),
-        },
-      );
+      const myHeaders = new Headers();
+      myHeaders.append('Content-Type', 'application/json');
 
-      const result = await response.json();
+      const raw = JSON.stringify(updatedProduct);
 
-      if (result) {
-        dispatch(saveProducts(result.products));
-        onSuccessGetData();
-      } else {
-        onErrorGetData();
-      }
+      const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow',
+      };
+
+      await fetch(
+        'https://parchi.maaqdocplus.com/updateProducts',
+        requestOptions,
+      )
+        .then(response => response.json())
+        .then(result => {
+          console.log(result);
+          onSuccess();
+        })
+        .catch(error => {
+          console.error(error);
+          onError();
+        });
     } catch (err) {
-      onErrorGetData();
+      console.log(err);
+      onError();
+    }
+  };
+};
+export const handleInvoice = (updatedInvoice, onSuccess, onError) => {
+  return async dispatch => {
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append('Content-Type', 'application/json');
+
+      const raw = JSON.stringify(updatedInvoice);
+
+      const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow',
+      };
+
+      await fetch(
+        'https://parchi.maaqdocplus.com/invoiceUpdate',
+        requestOptions,
+      )
+        .then(response => response.json())
+        .then(result => {
+          console.log(result);
+          onSuccess();
+        })
+        .catch(error => {
+          console.error(error);
+          onError();
+        });
+    } catch (err) {
+      console.log(err);
+      onError();
     }
   };
 };

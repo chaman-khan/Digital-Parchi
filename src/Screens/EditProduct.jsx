@@ -17,7 +17,7 @@ import CustomHeader from '../Components/CustomHeader';
 import CustomScrollView from '../Components/CustomScrollView';
 import Theme from '../Theme/Theme';
 import {useSnackbar} from '../Components/CustomSnackBar';
-import {handlePostProduct} from '../Features/ParchiSlice';
+import {handlePostProduct, handleUpdateProduct} from '../Features/ParchiSlice';
 import CustomActivityIndicator from '../Components/CutomActivityIndicator';
 import {CustomInputField} from './AddProduct';
 
@@ -52,37 +52,111 @@ const EditProduct = ({navigation, route}) => {
     });
   };
 
+  // const saveIt = () => {
+  //   if (title.length === 0 || description.length === 0 || price.length === 0) {
+  //     showSnackbar('Please Fill all Fields');
+  //     return;
+  //   } else if (image === '') {
+  //     showSnackbar('Please upload product image');
+  //     return;
+  //   }
+  //   Keyboard.dismiss();
+  //   setShowActivity(true);
+  //   let updatedProduct = {
+  //     Description: description,
+  //     Business_ID: userId,
+  //     Name: title,
+  //     Image_Data: image.uri,
+  //     Image_Name: image.name,
+  //     Category: category,
+  //     Unit: unit,
+  //     Price: parseInt(price.trim()),
+  //   };
+  //   // dispatch(handleUpdateProduct(data.Business_ID, onSuccess, onError));
+  //   dispatch(
+  //     handleUpdateProduct(
+  //       userId,
+  //       updatedProduct,
+  //       () => {
+  //         setShowActivity(false);
+  //         showSnackbar('Success: Product has been Updated', 'green');
+  //       },
+  //       () => {
+  //         setShowActivity(false);
+  //         showSnackbar(
+  //           'Failure: Something went wrong! Reverting to old product...',
+  //         );
+  //         // Reverting to old product
+  //         setTitle(Item.Name);
+  //         setDescription(Item.Description);
+  //         setPrice(Item.Unit_Price.toString());
+  //         setCategory(Item.Category);
+  //         setUnit(Item.Unit);
+  //       },
+  //     ),
+  //   );
+  // };
+
   const saveIt = () => {
     if (title.length === 0 || description.length === 0 || price.length === 0) {
       showSnackbar('Please Fill all Fields');
       return;
-    } else if (image === '') {
-      showSnackbar('Please upload product image');
+    }
+    if (
+      title === Item.Name &&
+      description === Item.Description &&
+      price === Item.Unit_Price.toString() &&
+      category === Item.Category &&
+      unit === Item.Unit &&
+      image === Item.Image
+    ) {
+      // If nothing has changed, show a message or handle it as needed
+      showSnackbar('No changes made.');
       return;
     }
-    Keyboard.dismiss();
+
     setShowActivity(true);
-    let data = {
+
+    let updatedProduct = {
       Description: description,
-      Business_ID: userId,
       Name: title,
-      Image_Data: image.uri,
-      Image_Name: image.name,
       Category: category,
       Unit: unit,
-      Price: parseInt(price.trim()),
+      Price: parseFloat(price.trim()),
+      Business_ID: userId,
+      PSID: Item.id,
     };
-    dispatch(handlePostProduct(data, onSuccess, onError));
+
+    // Check if the image has changed
+    if (image !== Item.Image) {
+      updatedProduct = {
+        ...updatedProduct,
+        Image_Data: data.data,
+        Image_Name: data.path.split('/').pop(),
+      };
+
+      // Dispatch update with new product data
+      dispatch(handleUpdateProduct(updatedProduct, onSuccess, onError));
+    } else {
+      // If the image hasn't changed, dispatch update without image data
+      dispatch(handleUpdateProduct(updatedProduct, onSuccess, onError));
+    }
   };
 
   const onSuccess = res => {
     setShowActivity(false);
-    showSnackbar('Success : Product has been Posted', 'green');
+    showSnackbar('Success: Product has been Updated', 'green');
   };
 
   const onError = err => {
     setShowActivity(false);
-    showSnackbar('Failure : Something went wrong!');
+    showSnackbar('Failure: Something went wrong! Reverting to old product...');
+    // Reverting to old product
+    setTitle(Item.Name);
+    setDescription(Item.Description);
+    setPrice(Item.Unit_Price.toString());
+    setCategory(Item.Category);
+    setUnit(Item.Unit);
   };
 
   return (

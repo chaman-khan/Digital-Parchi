@@ -16,26 +16,47 @@ import CustomScrollView from '../Components/CustomScrollView';
 import Theme from '../Theme/Theme';
 import {useSnackbar} from '../Components/CustomSnackBar';
 import {CustomInputField} from './AddProduct';
+import {useDispatch, useSelector} from 'react-redux';
+import {handleInvoice} from '../Features/ParchiSlice';
 
 const {width, height} = Dimensions.get('screen');
 
 const Invoice = ({navigation}) => {
   const {showSnackbar} = useSnackbar();
 
+  const dispatch = useDispatch();
+  const logo1 = useSelector(state => state.pin.logo);
+  const Business_ID = useSelector(state => state.pin.userId);
+  console.log(Business_ID);
+
+  console.log(logo1);
+
   const [message, setMessage] = useState('');
-  const [logo, setLogo] = useState('');
+  const [logo, setLogo] = useState(logo1 ? logo1 : '');
   const [QR, setQR] = useState('');
 
-  const handlePickingImage = setValue => {
+  const handlePickingImage = () => {
     ImagePicker.openPicker({
       mediaType: 'photo',
       multiple: false,
+      includeBase64: true,
     }).then(data => {
-      setValue({
-        uri: data.path,
-        name: data.path.split('/').pop(),
-        type: data.mime,
-      });
+      setLogo(data.path);
+      console.log(logo);
+      // setValue({
+      //   uri: data.path,
+      //   name: data.path.split('/').pop(),
+      //   type: data.mime,
+      // });
+    });
+  };
+  const handlePickingImage1 = () => {
+    ImagePicker.openPicker({
+      mediaType: 'photo',
+      multiple: false,
+      includeBase64: true,
+    }).then(data => {
+      setQR(data.path);
     });
   };
 
@@ -44,7 +65,21 @@ const Invoice = ({navigation}) => {
       showSnackbar('Please Enter all data');
       return;
     }
-    showSnackbar('When server is ok this data will be saved...', 'green');
+    let updateInvoice = {
+      Business_ID: Business_ID, //Compulsary
+      InvoiceMessage: message,
+      Logo: logo,
+      QR: QR,
+    };
+    dispatch(handleInvoice(updateInvoice, onSuccess, onError));
+  };
+  const onSuccess = res => {
+    showSnackbar('Success: Invoice has been Updated', 'green');
+    navigation.goBack();
+  };
+
+  const onError = err => {
+    showSnackbar('Failure: Something went wrong! Reverting to old product...');
   };
 
   return (
@@ -55,10 +90,11 @@ const Invoice = ({navigation}) => {
       />
       <CustomScrollView>
         <ImageBackground
-          source={{uri: logo?.uri}}
+          // source={{uri: logo?.uri}}
+          source={{uri: logo}}
           style={styles.imageContainer}
           imageStyle={styles.imageStyle}>
-          {!logo.uri && (
+          {!logo && (
             <View style={styles.imageEmpty}>
               <Entypo name="plus" color={Theme.colors.primary} size={100} />
               <Text
@@ -73,14 +109,14 @@ const Invoice = ({navigation}) => {
           )}
           <TouchableOpacity
             style={styles.imagePicker}
-            onPress={() => handlePickingImage(setLogo)}
+            onPress={() => handlePickingImage()}
           />
         </ImageBackground>
         <ImageBackground
-          source={{uri: QR?.uri}}
+          source={{uri: QR}}
           style={styles.imageContainer}
           imageStyle={styles.imageStyle}>
-          {!QR.uri && (
+          {!QR && (
             <View style={styles.imageEmpty}>
               <Entypo name="plus" color={Theme.colors.primary} size={100} />
               <Text
@@ -95,7 +131,7 @@ const Invoice = ({navigation}) => {
           )}
           <TouchableOpacity
             style={styles.imagePicker}
-            onPress={() => handlePickingImage(setQR)}
+            onPress={() => handlePickingImage1()}
           />
         </ImageBackground>
         <CustomInputField
