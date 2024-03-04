@@ -51,52 +51,6 @@ const EditProduct = ({navigation, route}) => {
       });
     });
   };
-
-  // const saveIt = () => {
-  //   if (title.length === 0 || description.length === 0 || price.length === 0) {
-  //     showSnackbar('Please Fill all Fields');
-  //     return;
-  //   } else if (image === '') {
-  //     showSnackbar('Please upload product image');
-  //     return;
-  //   }
-  //   Keyboard.dismiss();
-  //   setShowActivity(true);
-  //   let updatedProduct = {
-  //     Description: description,
-  //     Business_ID: userId,
-  //     Name: title,
-  //     Image_Data: image.uri,
-  //     Image_Name: image.name,
-  //     Category: category,
-  //     Unit: unit,
-  //     Price: parseInt(price.trim()),
-  //   };
-  //   // dispatch(handleUpdateProduct(data.Business_ID, onSuccess, onError));
-  //   dispatch(
-  //     handleUpdateProduct(
-  //       userId,
-  //       updatedProduct,
-  //       () => {
-  //         setShowActivity(false);
-  //         showSnackbar('Success: Product has been Updated', 'green');
-  //       },
-  //       () => {
-  //         setShowActivity(false);
-  //         showSnackbar(
-  //           'Failure: Something went wrong! Reverting to old product...',
-  //         );
-  //         // Reverting to old product
-  //         setTitle(Item.Name);
-  //         setDescription(Item.Description);
-  //         setPrice(Item.Unit_Price.toString());
-  //         setCategory(Item.Category);
-  //         setUnit(Item.Unit);
-  //       },
-  //     ),
-  //   );
-  // };
-
   const saveIt = () => {
     if (title.length === 0 || description.length === 0 || price.length === 0) {
       showSnackbar('Please Fill all Fields');
