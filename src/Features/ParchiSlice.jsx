@@ -12,7 +12,6 @@ export const handleGetProducts = (userID, onSuccessGetData, onErrorGetData) => {
       });
 
       const result = await response.json();
-
       if (result) {
         dispatch(saveProducts(result.products));
         onSuccessGetData();

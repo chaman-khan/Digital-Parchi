@@ -53,18 +53,17 @@ const ProductsRenderItem = React.memo(
 
 const ProductsListing = ({ListButtonComponent, onPress}) => {
   const dispatch = useDispatch();
-  const {products} = useSelector(state => state.app);
   const {userId, logo} = useSelector(state => state.pin);
+  const {products} = useSelector(state => state.app);
   const {showSnackbar} = useSnackbar();
 
-  console.log('logo------------------');
-  console.log(logo);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('All Products');
   const [showActivity, setShowActivity] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
+    setIsRefreshing(true);
     setShowActivity(true);
     handleGetData();
   }, []);
@@ -160,7 +159,7 @@ const ProductsListing = ({ListButtonComponent, onPress}) => {
       ListHeaderComponent={
         <View>
           <Search value={search} setValue={setSearch} />
-          <Image source={{uri: logo.toString()}} style={styles.image} />
+          <Image source={{uri: logo}} style={styles.image} />
           <FlatList
             horizontal
             showsHorizontalScrollIndicator={false}

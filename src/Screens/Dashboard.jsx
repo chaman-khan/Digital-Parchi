@@ -37,9 +37,7 @@ function Dashboard() {
   const dashboardData = useSelector(state => state.app.dashboardData);
   const {userId} = useSelector(state => state.pin);
   const [filterValue, setFilterValue] = useState('Today');
-  console.log('dash--->', dashboardData);
   const dispatch = useDispatch();
-  const [selectedDropdownValue, setSelectedDropdownValue] = useState('today');
 
   const fetchDashboardDataForSelectedValue = async value => {
     try {
@@ -73,13 +71,6 @@ function Dashboard() {
     // Fetch dashboard data for the default value ('today') when the component mounts
     fetchDashboardDataForSelectedValue(FilterData[filterValue]);
   }, [filterValue]);
-
-  // useEffect(() => {
-  //   // Fetch dashboard data when the selectedDropdownValue changes
-  //   if (selectedDropdownValue !== 'today') {
-  //     fetchDashboardDataForSelectedValue(selectedDropdownValue);
-  //   }
-  // }, [filterValue]);
 
   const getDateRange = value => {
     const today = new Date();
@@ -146,60 +137,6 @@ function Dashboard() {
     {title: 'Clothing', color: '#2900A5', inventory: 321},
     {title: 'Home', color: '#ff9100', inventory: 391},
   ];
-
-  const HeaderComponent = () => {
-    return (
-      <View>
-        <View style={styles.container} className="bg-violet-200 p-5">
-          <View className="flex flex-row justify-between items-center">
-            <View>
-              <Text style={styles.title}>Sales</Text>
-              <PieChart
-                widthAndHeight={widthAndHeight}
-                series={series}
-                sliceColor={sliceColor}
-                coverRadius={0.45}
-                coverFill={'#FFF'}
-              />
-            </View>
-            <View className="mt-10">
-              {itemDescription?.map((item, index) => (
-                <View key={index}>
-                  <View className="flex-row items-center">
-                    <View>
-                      <Text
-                        className="mx-1"
-                        style={{
-                          backgroundColor: item.color,
-                          color: item.color,
-                          width: 15,
-                          height: 10,
-                        }}>
-                        *
-                      </Text>
-                    </View>
-                    <View>
-                      <Text className="py-1 text-black font-medium">
-                        {item.title}({item.inventory})
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              ))}
-            </View>
-          </View>
-        </View>
-
-        <DropdownComponent
-          data={['Today', 'Weekly', 'Monthly']}
-          onDropdownChange={setFilterValue}
-          value={filterValue}
-          placeholder={'Today'}
-          title="Filter"
-        />
-      </View>
-    );
-  };
 
   const renderItem = ({item}) => {
     return (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import ProductsListing from '../Components/ProductsListing';
 import CustomIncrementer from '../Components/CustomIncrementer';
 
