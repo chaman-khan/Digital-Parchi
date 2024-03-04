@@ -7,6 +7,8 @@ import {
   FlatList,
   Dimensions,
 } from 'react-native';
+import {useDispatch} from 'react-redux';
+import {logout} from '../Features/PinSlice';
 
 import Entypo from 'react-native-vector-icons/Entypo';
 
@@ -41,16 +43,23 @@ const Fields = [
   {
     icon: 'log-out',
     title: 'Logout',
+    logout: true,
   },
 ];
 
 const Account = ({navigation}) => {
+  const dispatch = useDispatch();
   const renderItem = ({item, index}) => {
     return (
       <TouchableOpacity
         activeOpacity={1}
         style={styles.fieldWrapper}
         onPress={() => {
+          if (item?.logout) {
+            dispatch(logout());
+            navigation.replace('AuthStack');
+            return;
+          }
           if (item.navigate) navigation.navigate(item.navigate);
           else return;
         }}>
@@ -66,7 +75,7 @@ const Account = ({navigation}) => {
   };
   return (
     <View style={styles.mainContainer}>
-      <Text style={styles.hello}>Hello,</Text>
+      <Text style={{color: Theme.colors.primary}}>Hello,</Text>
       <FlatList
         data={Fields}
         renderItem={renderItem}

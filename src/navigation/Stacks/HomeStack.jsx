@@ -1,5 +1,7 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {useDispatch, useSelector} from 'react-redux';
+import NetInfo from '@react-native-community/netinfo';
 
 import InventoryManagement from '../../Screens/InventoryManagement';
 import AddProduct from '../../Screens/AddProduct';
@@ -7,9 +9,46 @@ import HomeTab from '../Tabs';
 import ProductDetails from '../../Screens/ProductDetails';
 import Invoice from '../../Screens/Invoice';
 import EditProduct from '../../Screens/EditProduct';
+import {useSnackbar} from '../../Components/CustomSnackBar';
+import {cartData, removeFromOfflineCart} from '../../Features/NawanSlice';
+import Theme from '../../Theme/Theme';
 
 const HomeStack = () => {
+  const dispatch = useDispatch();
   const Stack = createNativeStackNavigator();
+  const {offlineCartItems} = useSelector(state => state.NawanSlice);
+  const [isOnline, setIsOnline] = useState(false);
+  const {showSnackbar} = useSnackbar();
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsOnline(state.isConnected);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (isOnline && offlineCartItems.length !== 0) {
+      showSnackbar(
+        `Uploading 1 of ${offlineCartItems.length} bills saved offline`,
+        Theme.colors.secondary,
+      );
+      dispatch(
+        cartData(
+          offlineCartItems[offlineCartItems.length - 1],
+          onSuccess,
+          onError,
+        ),
+      );
+    }
+  }, [isOnline, offlineCartItems]);
+
+  const onSuccess = res => {
+    dispatch(removeFromOfflineCart());
+  };
+
+  const onError = err => {};
+
   return (
     <Stack.Navigator
       screenOptions={{

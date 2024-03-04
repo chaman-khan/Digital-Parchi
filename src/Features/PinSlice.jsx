@@ -36,9 +36,12 @@ const PinSlice = createSlice({
       state.userId = action.payload.Business_ID;
       state.logo = action.payload.logo;
     },
+    logout: (state, action) => {
+      state.userId = '';
+    },
   },
 });
 
-const {saveUserInfo} = PinSlice.actions;
+export const {saveUserInfo, logout} = PinSlice.actions;
 
 export default PinSlice.reducer;

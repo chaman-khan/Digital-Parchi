@@ -5,12 +5,6 @@ import Entypo from 'react-native-vector-icons/Entypo';
 
 import Theme from '../Theme/Theme';
 
-// const data = [
-//   {label: 'Today', value: 'today'},
-//   {label: 'Weekly', value: 'last7Days'},
-//   {label: 'Monthly', value: 'last30Days'},
-// ];
-
 const {width, height} = Dimensions.get('window');
 
 const DropdownComponent = ({
@@ -19,6 +13,7 @@ const DropdownComponent = ({
   value,
   placeholder,
   isRow,
+  title,
 }) => {
   const [isFocus, setIsFocus] = useState(false);
 
@@ -39,7 +34,7 @@ const DropdownComponent = ({
           top: -10,
           zIndex: 1,
         }}>
-        {placeholder}
+        {title ? title : placeholder}
       </Text>
       <SelectDropdown
         data={data}

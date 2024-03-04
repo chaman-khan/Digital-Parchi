@@ -13,6 +13,8 @@ export const cartData = (data, onSuccess, onError) => {
 
       const result = await response.json();
 
+      console.log(result);
+
       if (result) {
         onSuccess();
       } else {
@@ -50,6 +52,10 @@ const NawanSlice = createSlice({
       delete state.cartItems[action.payload];
     },
 
+    removeFromOfflineCart: state => {
+      state.offlineCartItems.pop();
+    },
+
     // updating items quantity
     updateCart: (state, action) => {
       state.cartItems = {
@@ -66,5 +72,6 @@ export const {
   updateCart,
   updateOfflineCart,
   clearCart,
+  removeFromOfflineCart,
 } = NawanSlice.actions;
 export default NawanSlice.reducer;

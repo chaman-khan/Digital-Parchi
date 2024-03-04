@@ -27,10 +27,6 @@ const Invoice = ({navigation}) => {
   const dispatch = useDispatch();
   const logo1 = useSelector(state => state.pin.logo);
   const Business_ID = useSelector(state => state.pin.userId);
-  console.log(Business_ID);
-
-  console.log(logo1);
-
   const [message, setMessage] = useState('');
   const [logo, setLogo] = useState(logo1 ? logo1 : '');
   const [QR, setQR] = useState('');
@@ -42,7 +38,6 @@ const Invoice = ({navigation}) => {
       includeBase64: true,
     }).then(data => {
       setLogo(data.path);
-      console.log(logo);
       // setValue({
       //   uri: data.path,
       //   name: data.path.split('/').pop(),

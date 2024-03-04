@@ -6,6 +6,7 @@ import {
   FlatList,
   RefreshControl,
   Dimensions,
+  ScrollView,
 } from 'react-native';
 import PieChart from 'react-native-pie-chart';
 import {useSelector, useDispatch} from 'react-redux';
@@ -15,6 +16,12 @@ import {useFocusEffect} from '@react-navigation/native';
 import Theme from '../Theme/Theme';
 
 const {width, height} = Dimensions.get('window');
+
+const FilterData = {
+  Today: 'today',
+  Weekly: 'last7Days',
+  Monthly: 'last30Days',
+};
 
 const RowField = ({title, price}) => {
   return (
@@ -29,6 +36,7 @@ function Dashboard() {
   const [refreshing, setRefreshing] = useState(false);
   const dashboardData = useSelector(state => state.app.dashboardData);
   const {userId} = useSelector(state => state.pin);
+  const [filterValue, setFilterValue] = useState('Today');
   console.log('dash--->', dashboardData);
   const dispatch = useDispatch();
   const [selectedDropdownValue, setSelectedDropdownValue] = useState('today');
@@ -53,9 +61,9 @@ function Dashboard() {
       );
 
       console.log('Fetch successful');
-      setSelectedDropdownValue(value);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
+      setRefreshing(false);
     } finally {
       setRefreshing(false); // Stop refreshing indicator
     }
@@ -63,15 +71,15 @@ function Dashboard() {
 
   useEffect(() => {
     // Fetch dashboard data for the default value ('today') when the component mounts
-    fetchDashboardDataForSelectedValue('today');
-  }, []);
+    fetchDashboardDataForSelectedValue(FilterData[filterValue]);
+  }, [filterValue]);
 
-  useEffect(() => {
-    // Fetch dashboard data when the selectedDropdownValue changes
-    if (selectedDropdownValue !== 'today') {
-      fetchDashboardDataForSelectedValue(selectedDropdownValue);
-    }
-  }, [selectedDropdownValue]);
+  // useEffect(() => {
+  //   // Fetch dashboard data when the selectedDropdownValue changes
+  //   if (selectedDropdownValue !== 'today') {
+  //     fetchDashboardDataForSelectedValue(selectedDropdownValue);
+  //   }
+  // }, [filterValue]);
 
   const getDateRange = value => {
     const today = new Date();
@@ -181,14 +189,14 @@ function Dashboard() {
             </View>
           </View>
         </View>
-        <View className="flex-row justify-between items-center m-5">
-          <Text className="text-black font-bold text-lg">Sales Report</Text>
-          <View style={styles.dropdownContainer}>
-            <DropdownComponent
-              onDropdownChange={fetchDashboardDataForSelectedValue}
-            />
-          </View>
-        </View>
+
+        <DropdownComponent
+          data={['Today', 'Weekly', 'Monthly']}
+          onDropdownChange={setFilterValue}
+          value={filterValue}
+          placeholder={'Today'}
+          title="Filter"
+        />
       </View>
     );
   };
@@ -213,28 +221,83 @@ function Dashboard() {
   };
 
   return (
-    <FlatList
+    <ScrollView
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
-          onRefresh={() => setRefreshing(true)}
+          onRefresh={() =>
+            fetchDashboardDataForSelectedValue(FilterData[filterValue])
+          }
         />
       }
-      ListHeaderComponent={HeaderComponent}
-      data={groupAndCalculateTotalPrice(dashboardData)}
-      keyExtractor={item => item.Cart_ID}
       style={{
+        flex: 1,
         backgroundColor: 'white',
-      }}
-      contentContainerStyle={{
-        paddingBottom: 70,
-        paddingTop: 5,
-      }}
-      renderItem={renderItem}
-      ListEmptyComponent={
-        <Text style={styles.listEmpty}>No data available</Text>
-      }
-    />
+      }}>
+      <View style={styles.container} className="bg-violet-200 p-5">
+        <View className="flex flex-row justify-between items-center">
+          <View>
+            <Text style={styles.title}>Sales</Text>
+            <PieChart
+              widthAndHeight={widthAndHeight}
+              series={series}
+              sliceColor={sliceColor}
+              coverRadius={0.45}
+              coverFill={'#FFF'}
+            />
+          </View>
+          <View className="mt-10">
+            {itemDescription?.map((item, index) => (
+              <View key={index}>
+                <View className="flex-row items-center">
+                  <View>
+                    <Text
+                      className="mx-1"
+                      style={{
+                        backgroundColor: item.color,
+                        color: item.color,
+                        width: 15,
+                        height: 10,
+                      }}>
+                      *
+                    </Text>
+                  </View>
+                  <View>
+                    <Text className="py-1 text-black font-medium">
+                      {item.title}({item.inventory})
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            ))}
+          </View>
+        </View>
+      </View>
+
+      <DropdownComponent
+        data={['Today', 'Weekly', 'Monthly']}
+        onDropdownChange={setFilterValue}
+        value={filterValue}
+        placeholder={'Today'}
+        title="Filter"
+      />
+
+      <FlatList
+        data={groupAndCalculateTotalPrice(dashboardData)}
+        keyExtractor={item => item.Cart_ID}
+        style={{
+          backgroundColor: 'white',
+        }}
+        contentContainerStyle={{
+          paddingBottom: 70,
+          paddingTop: 5,
+        }}
+        renderItem={renderItem}
+        ListEmptyComponent={
+          <Text style={styles.listEmpty}>No data available</Text>
+        }
+      />
+    </ScrollView>
   );
 }
 

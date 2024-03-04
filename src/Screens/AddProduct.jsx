@@ -90,7 +90,13 @@ const AddProduct = ({navigation}) => {
   };
 
   const saveIt = () => {
-    if (title.length === 0 || description.length === 0 || price.length === 0) {
+    if (
+      title.length === 0 ||
+      description.length === 0 ||
+      price.length === 0 ||
+      category.length === 0 ||
+      unit.length === 0
+    ) {
       showSnackbar('Please Fill all Fields');
       return;
     } else if (image === '') {
