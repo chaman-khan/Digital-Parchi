@@ -5,7 +5,7 @@ const ShowSnackBar = (text, bgColor, confirmText = '') => {
     message: `\n${text}`,
     backgroundColor: bgColor,
     duration: 4000,
-    position: 'top',
+    position: 'bottom',
     confirmText: confirmText,
     paddingTop: 100,
   });
