@@ -119,7 +119,32 @@ export const handleInvoice = (updatedInvoice, onSuccess, onError) => {
     }
   };
 };
+export const handleGetProfile = (userID, onSuccessGetData, onErrorGetData) => {
+  return async dispatch => {
+    try {
+      const response = await fetch(
+        'https://parchi.maaqdocplus.com/fetchProfile',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({Business_ID: userID}),
+        },
+      );
 
+      const result = await response.json();
+      if (result) {
+        dispatch(saveProfile(result));
+        onSuccessGetData();
+      } else {
+        onErrorGetData();
+      }
+    } catch (err) {
+      onErrorGetData();
+    }
+  };
+};
 // dashbaord Data
 
 export const fetchDashboardData = createAsyncThunk(
@@ -153,10 +178,14 @@ const ParchiSlice = createSlice({
     searchData: [],
     printedBills: [],
     dashboardData: [],
+    profile: {},
   },
   reducers: {
     saveProducts: (state, action) => {
       state.products = action.payload;
+    },
+    saveProfile: (state, action) => {
+      state.profile = action.payload;
     },
 
     // search Items
@@ -176,5 +205,6 @@ const ParchiSlice = createSlice({
   },
 });
 
-export const {searchItems, clearBills, saveProducts} = ParchiSlice.actions;
+export const {searchItems, clearBills, saveProducts, saveProfile} =
+  ParchiSlice.actions;
 export default ParchiSlice.reducer;

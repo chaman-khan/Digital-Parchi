@@ -99,6 +99,7 @@ const Cart = () => {
     };
     if (isOnline) {
       dispatch(cartData(data, onSuccess, onError));
+      console.log(data);
     } else {
       dispatch(updateOfflineCart(data));
       showSnackbar('Success : Data Saved Offline!', Theme.colors.secondary);

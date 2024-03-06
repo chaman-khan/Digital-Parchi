@@ -17,7 +17,8 @@ import Theme from '../Theme/Theme';
 import {useSnackbar} from '../Components/CustomSnackBar';
 import {CustomInputField} from './AddProduct';
 import {useDispatch, useSelector} from 'react-redux';
-import {handleInvoice} from '../Features/ParchiSlice';
+import {handleGetProfile, handleInvoice} from '../Features/ParchiSlice';
+import {useFocusEffect} from '@react-navigation/native';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -25,11 +26,31 @@ const Invoice = ({navigation}) => {
   const {showSnackbar} = useSnackbar();
 
   const dispatch = useDispatch();
-  const logo1 = useSelector(state => state.pin.logo);
-  const Business_ID = useSelector(state => state.pin.userId);
-  const [message, setMessage] = useState('');
-  const [logo, setLogo] = useState(logo1 ? logo1 : '');
-  const [QR, setQR] = useState('');
+  const userId = useSelector(state => state.pin.userId);
+  const {profile} = useSelector(state => state.app);
+  const [message, setMessage] = useState(profile.Profile.InvoiceMessage);
+  // const logo1 = profile.Profile.Logo;
+  const [logo, setLogo] = useState(profile.Profile.Logo);
+  const [QR, setQR] = useState(profile.Profile.QR ? profile.Profile.QR : '');
+
+  useEffect(() => {
+    GetProfile();
+  }, []);
+
+  const GetProfile = () => {
+    console.log(userId);
+    dispatch(handleGetProfile(userId, onSuccessGetData, onErrorGetData));
+    console.log('profile');
+    console.log(profile);
+  };
+
+  const onSuccessGetData = () => {
+    showSnackbar('Success : Invoice data fetched', 'green');
+  };
+
+  const onErrorGetData = () => {
+    showSnackbar('Error : Check Internet!', 'red');
+  };
 
   const handlePickingImage = () => {
     ImagePicker.openPicker({
@@ -45,6 +66,7 @@ const Invoice = ({navigation}) => {
       // });
     });
   };
+
   const handlePickingImage1 = () => {
     ImagePicker.openPicker({
       mediaType: 'photo',
@@ -61,7 +83,7 @@ const Invoice = ({navigation}) => {
       return;
     }
     let updateInvoice = {
-      Business_ID: Business_ID, //Compulsary
+      Business_ID: userId, //Compulsary
       InvoiceMessage: message,
       Logo: logo,
       QR: QR,
@@ -76,7 +98,6 @@ const Invoice = ({navigation}) => {
   const onError = err => {
     showSnackbar('Failure: Something went wrong! Reverting to old product...');
   };
-
   return (
     <View style={styles.mainContainer}>
       <CustomHeader
@@ -161,6 +182,9 @@ const styles = StyleSheet.create({
     height: height / 4,
     resizeMode: 'contain',
     marginTop: (height / 2.5 - height / 4) / 2,
+    borderWidth: 10,
+    borderRadius: 10,
+    borderStyle: 'dashed',
   },
   imagePicker: {
     flex: 1,

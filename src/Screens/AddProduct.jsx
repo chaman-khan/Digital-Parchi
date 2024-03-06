@@ -131,7 +131,7 @@ const AddProduct = ({navigation}) => {
   return (
     <View style={styles.mainContainer}>
       <CustomHeader
-        title={`Add\tProduct`}
+        title={`Add Product`}
         onPressBack={() => navigation.goBack()}
       />
       <CustomScrollView>
@@ -157,7 +157,14 @@ const AddProduct = ({navigation}) => {
           setValue={setTitle}
         />
         <DropdownComponent
-          data={[...new Set(products.map(product => product.Category))]}
+          // data={[...new Set(products.map(product => product.Category))]}
+          data={[
+            'Bakers',
+            'Dairy',
+            'Tea & Coffee',
+            'Snacks',
+            'Biscuits & Cookies',
+          ]}
           onDropdownChange={setCategory}
           value={category}
           placeholder="Category"

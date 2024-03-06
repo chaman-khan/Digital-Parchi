@@ -8,12 +8,12 @@ import {
   Dimensions,
   ScrollView,
 } from 'react-native';
-import PieChart from 'react-native-pie-chart';
 import {useSelector, useDispatch} from 'react-redux';
 import {clearBills, fetchDashboardData} from '../Features/ParchiSlice';
 import DropdownComponent from '../Components/Dropdown';
 import {useFocusEffect} from '@react-navigation/native';
 import Theme from '../Theme/Theme';
+import {PieChart} from 'react-native-chart-kit';
 
 const {width, height} = Dimensions.get('window');
 
@@ -30,6 +30,14 @@ const RowField = ({title, price}) => {
       <Text style={styles.rowPrice}>{price}/-</Text>
     </View>
   );
+};
+
+const categoryColor = {
+  Bakers: '#31BD5F',
+  Dairy: '#F9A32B',
+  'Tea & Coffee': '#4682FD',
+  Snacks: '#FD7A86',
+  'Biscuits & Cookies': '#7B5FFD',
 };
 
 function Dashboard() {
@@ -129,8 +137,10 @@ function Dashboard() {
   };
 
   const widthAndHeight = 120;
-  const series = [123, 321, 123];
-  const sliceColor = ['#C608D1', '#2900A5', '#ff9100'];
+  const series = [500, 500, 500];
+  const sliceColor = Object.keys(categoryColor).map(k => {
+    return k;
+  });
   const itemDescription = [
     {title: 'Items', color: 'black', inventory: 'Available'},
     {title: 'Electronics', color: '#C608D1', inventory: 123},
@@ -144,8 +154,8 @@ function Dashboard() {
         <Text style={styles.date}>Date: {item.items[0].Date_Added}</Text>
         {item.items.map(groupedItem => (
           <RowField
-            title={`${groupedItem.PSid} (${groupedItem.Quantity})`}
-            price={groupedItem.Price}
+            title={`${groupedItem.Name} (${groupedItem.Quantity})`}
+            price={groupedItem.Category}
           />
         ))}
         <Text style={styles.totalText}>
@@ -171,28 +181,48 @@ function Dashboard() {
         flex: 1,
         backgroundColor: 'white',
       }}>
-      <View style={styles.container} className="bg-violet-200 p-5">
-        <View className="flex flex-row justify-between items-center">
-          <View>
-            <Text style={styles.title}>Sales</Text>
-            <PieChart
-              widthAndHeight={widthAndHeight}
-              series={series}
-              sliceColor={sliceColor}
-              coverRadius={0.45}
-              coverFill={'#FFF'}
-            />
-          </View>
-          <View className="mt-10">
-            {itemDescription?.map((item, index) => (
-              <View key={index}>
+      <View style={styles.container} className="bg-white">
+        <View>
+          <Text style={styles.title}>Sales</Text>
+
+          <PieChart
+            data={Object.entries(categoryColor).map(([key, value]) => {
+              return {
+                name: `${key} (${
+                  dashboardData.filter(f => f.Category === key).length
+                })`,
+                population: dashboardData.filter(f => f.Category === key)
+                  .length,
+                color: value,
+                legendFontColor: value,
+                legendFontSize: 12,
+              };
+            })}
+            width={width - 10}
+            height={210}
+            chartConfig={{
+              backgroundColor: '#e26a00',
+              backgroundGradientFrom: '#fb8c00',
+              backgroundGradientTo: '#ffa726',
+              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+            }}
+            accessor={'population'}
+            backgroundColor={'transparent'}
+            // paddingLeft={'35'}
+            center={[0, 0]}
+          />
+        </View>
+        {/* <View className="mt-10">
+            {Object.entries(categoryColor).map(([key, value]) => (
+              <View>
                 <View className="flex-row items-center">
                   <View>
                     <Text
                       className="mx-1"
                       style={{
-                        backgroundColor: item.color,
-                        color: item.color,
+                        backgroundColor: value,
+                        color: value,
                         width: 15,
                         height: 10,
                       }}>
@@ -201,14 +231,15 @@ function Dashboard() {
                   </View>
                   <View>
                     <Text className="py-1 text-black font-medium">
-                      {item.title}({item.inventory})
+                      {key}
+                      {'\t'}(
+                      {dashboardData.filter(f => f.Category === key).length})
                     </Text>
                   </View>
                 </View>
               </View>
             ))}
-          </View>
-        </View>
+          </View> */}
       </View>
 
       <DropdownComponent
@@ -249,8 +280,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   title: {
-    fontSize: 24,
-    margin: 10,
+    fontSize: 20,
+    marginVertical: 10,
     fontWeight: 'bold',
     color: 'black',
   },

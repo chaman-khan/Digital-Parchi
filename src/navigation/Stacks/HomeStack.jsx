@@ -12,6 +12,7 @@ import EditProduct from '../../Screens/EditProduct';
 import {useSnackbar} from '../../Components/CustomSnackBar';
 import {cartData, removeFromOfflineCart} from '../../Features/NawanSlice';
 import Theme from '../../Theme/Theme';
+import CustomerInfo from '../../Screens/customerInfo';
 
 const HomeStack = () => {
   const dispatch = useDispatch();
@@ -63,6 +64,7 @@ const HomeStack = () => {
       <Stack.Screen name="AddProduct" component={AddProduct} />
       <Stack.Screen name="EditProduct" component={EditProduct} />
       <Stack.Screen name="Invoice" component={Invoice} />
+      <Stack.Screen name="CustomerInfo" component={CustomerInfo} />
     </Stack.Navigator>
   );
 };

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -38,6 +38,7 @@ const EditProduct = ({navigation, route}) => {
   const [price, setPrice] = useState(Item.Unit_Price.toString());
   const [category, setCategory] = useState(Item.Category);
   const [unit, setUnit] = useState(Item.Unit);
+  const [imageChanged, setImageChanged] = useState(false); // State to track if the image has changed
 
   const handlePickingImage = () => {
     ImagePicker.openPicker({
@@ -49,8 +50,10 @@ const EditProduct = ({navigation, route}) => {
         uri: data.data,
         name: data.path.split('/').pop(),
       });
+      setImageChanged(true); // Set imageChanged state to true when image is picked
     });
   };
+
   const saveIt = () => {
     if (title.length === 0 || description.length === 0 || price.length === 0) {
       showSnackbar('Please Fill all Fields');
@@ -62,7 +65,7 @@ const EditProduct = ({navigation, route}) => {
       price === Item.Unit_Price.toString() &&
       category === Item.Category &&
       unit === Item.Unit &&
-      image === Item.Image
+      !imageChanged // Check if the image has not changed
     ) {
       // If nothing has changed, show a message or handle it as needed
       showSnackbar('No changes made.');
@@ -81,20 +84,16 @@ const EditProduct = ({navigation, route}) => {
       PSID: Item.id,
     };
 
-    // Check if the image has changed
-    if (image !== Item.Image) {
+    if (imageChanged) {
+      // Check if the image has changed
       updatedProduct = {
         ...updatedProduct,
-        Image_Data: data.data,
-        Image_Name: data.path.split('/').pop(),
+        Image_Data: image.uri, // Use the newly picked image data
+        Image_Name: image.name,
       };
-
-      // Dispatch update with new product data
-      dispatch(handleUpdateProduct(updatedProduct, onSuccess, onError));
-    } else {
-      // If the image hasn't changed, dispatch update without image data
-      dispatch(handleUpdateProduct(updatedProduct, onSuccess, onError));
     }
+
+    dispatch(handleUpdateProduct(updatedProduct, onSuccess, onError));
   };
 
   const onSuccess = res => {

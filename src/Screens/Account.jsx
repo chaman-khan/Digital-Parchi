@@ -20,6 +20,7 @@ const Fields = [
   {
     icon: 'info-with-circle',
     title: 'Customer info',
+    navigate: 'CustomerInfo',
   },
   {
     icon: 'box',
@@ -75,7 +76,7 @@ const Account = ({navigation}) => {
   };
   return (
     <View style={styles.mainContainer}>
-      <Text style={{color: Theme.colors.primary}}>Hello,</Text>
+      <Text style={{color: 'transparent'}}>Hello,</Text>
       <FlatList
         data={Fields}
         renderItem={renderItem}
