@@ -7,7 +7,7 @@ import {handleGetProfile} from '../Features/ParchiSlice';
 import {useSnackbar} from '../Components/CustomSnackBar';
 import Theme from '../Theme/Theme';
 
-const CustomerInfo = ({navigation}) => {
+const ContactUs = ({navigation}) => {
   const {profile} = useSelector(state => state.app);
   const userId = useSelector(state => state.pin.userId);
   const {showSnackbar} = useSnackbar();
@@ -27,19 +27,12 @@ const CustomerInfo = ({navigation}) => {
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <CustomHeader
-        title={`Customer Info`}
+        title={`Contact Us`}
         onPressBack={() => navigation.goBack()}
       />
-      <View style={styles.logo}>
-        <Image
-          source={{uri: profile?.Profile?.Logo}}
-          style={{width: 160, height: 160, borderRadius: 25}}
-        />
-      </View>
-
       <View style={styles.info}>
         <View style={styles.header}>
-          <Text style={styles.name}>{profile?.Profile?.Name}</Text>
+          <Text style={styles.name}>Contact Info</Text>
           <Image
             source={{uri: profile?.Profile?.QR}}
             style={{width: 70, height: 70}}
@@ -60,17 +53,11 @@ const CustomerInfo = ({navigation}) => {
             <Text style={{color: Theme.colors.primary, fontWeight: '500'}}>
               Phone NO:
             </Text>
-            <Text style={{color: Theme.colors.primary, fontWeight: '500'}}>
-              Invoice Message:
-            </Text>
           </View>
           <View style={{width: '70%', gap: 10}}>
             <Text style={{color: 'grey'}}>{profile?.Profile?.Email}</Text>
             <Text style={{color: 'grey'}}>{profile?.Profile?.Address}</Text>
             <Text style={{color: 'grey'}}>{profile?.Profile?.Phone}</Text>
-            <Text style={{color: 'grey'}}>
-              {profile?.Profile?.InvoiceMessage}
-            </Text>
           </View>
         </View>
       </View>
@@ -112,4 +99,4 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 });
-export default CustomerInfo;
+export default ContactUs;

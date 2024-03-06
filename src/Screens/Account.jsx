@@ -40,6 +40,7 @@ const Fields = [
   {
     icon: 'user',
     title: 'Contact us',
+    navigate: 'ContactUs',
   },
   {
     icon: 'log-out',

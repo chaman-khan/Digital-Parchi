@@ -211,35 +211,35 @@ function Dashboard() {
             backgroundColor={'transparent'}
             // paddingLeft={'35'}
             center={[0, 0]}
+            hasLegend={false}
           />
-        </View>
-        {/* <View className="mt-10">
+          <View
+            className="mt-10"
+            style={{position: 'absolute', right: 10, bottom: 50}}>
             {Object.entries(categoryColor).map(([key, value]) => (
-              <View>
-                <View className="flex-row items-center">
-                  <View>
-                    <Text
-                      className="mx-1"
-                      style={{
-                        backgroundColor: value,
-                        color: value,
-                        width: 15,
-                        height: 10,
-                      }}>
-                      *
-                    </Text>
-                  </View>
-                  <View>
-                    <Text className="py-1 text-black font-medium">
-                      {key}
-                      {'\t'}(
-                      {dashboardData.filter(f => f.Category === key).length})
-                    </Text>
-                  </View>
-                </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginTop: 5,
+                }}>
+                <View
+                  className="mx-1"
+                  style={{
+                    backgroundColor: value,
+                    width: 10,
+                    height: 10,
+                    // borderRadius: 8,
+                  }}
+                />
+                <Text style={{color: value, fontSize: 13, fontWeight: '500'}}>
+                  {key}
+                  {'\t'}({dashboardData.filter(f => f.Category === key).length})
+                </Text>
               </View>
             ))}
-          </View> */}
+          </View>
+        </View>
       </View>
 
       <DropdownComponent
@@ -272,7 +272,6 @@ function Dashboard() {
 const styles = StyleSheet.create({
   container: {
     margin: 10,
-    borderRadius: 10,
   },
   Billscontainer: {
     flexShrink: 1,
@@ -284,6 +283,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     fontWeight: 'bold',
     color: 'black',
+    marginLeft: 10,
   },
   rowContainer: {
     flexDirection: 'row',
